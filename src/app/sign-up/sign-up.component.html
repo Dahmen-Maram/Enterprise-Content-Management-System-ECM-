@@ -1,0 +1,79 @@
+<div class="form-container">
+  <form (ngSubmit)="submitform()">
+    <h2 class="form-title">User Information</h2>
+    <div class="formgrid grid">
+      <div class="field col">
+        <label for="firstname2">Firstname</label>
+        <input id="firstname2" type="text" [(ngModel)]="person.name" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" name="name">
+      </div>
+      <div class="field col">
+        <label for="lastname2">Lastname</label>
+        <input id="lastname2" type="text" [(ngModel)]="person.lastName" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" name="lastName">
+      </div>
+    </div>
+    <div class="form-row">
+      <p>Gender</p>
+      <div class="formgroup-inline">
+        <div class="field-checkbox">
+          <input type="checkbox" id="Female" [(ngModel)]="person.gender" name="gender">
+          <label for="Female">Female</label>
+        </div>
+        <div class="field-checkbox">
+          <input type="checkbox" id="Male" [(ngModel)]="person.gender" name="gender">
+          <label for="Male">Male</label>
+        </div>
+        <div class="field-checkbox">
+          <input type="checkbox" id="others" [(ngModel)]="person.gender" name="gender">
+          <label for="others">Others</label>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="p-inputgroup">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-address-book"></i>
+          </span>
+        <input type="text" class="p-inputtext" placeholder="Enter your address" [(ngModel)]="person.address" name="address">
+      </div>
+    </div>    <div class="form-row">
+      <div class="p-inputgroup">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-key"></i>
+          </span>
+        <input type="password" class="p-inputtext" placeholder="Enter your password" [(ngModel)]="person.password" name="password">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="p-inputgroup">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-key"></i>
+          </span>
+        <input type="password" class="p-inputtext" placeholder="Confirm your password" [(ngModel)]="confirmedpassword" name="confirmpassword">
+      </div>
+    </div>
+    <div class="formgrid grid">
+      <div class="field col">
+        <div class="p-inputgroup">
+            <span class="p-inputgroup-addon">
+              <i class="pi pi-phone"></i>
+            </span>
+          <input type="number" class="p-inputtext" placeholder="Enter your phone number" [(ngModel)]="person.phone" name="phone">
+        </div>
+      </div>
+      <div class="field col">
+        <div class="p-inputgroup">
+            <span class="p-inputgroup-addon">
+              <i class="pi pi-at"></i>
+            </span>
+          <input type="text" class="p-inputtext" placeholder="Enter your email" [(ngModel)]="person.email" name="mail">
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <p-calendar class="max-w-full p-calendar" [(ngModel)]="person.birthDate" [inline]="true" [showWeek]="true" name="dateofbirth"></p-calendar>
+    </div>
+    <div class="bouton">
+    <p-button label="Submit" type="submit" class="p-button"></p-button>
+    </div>
+  </form>
+</div>

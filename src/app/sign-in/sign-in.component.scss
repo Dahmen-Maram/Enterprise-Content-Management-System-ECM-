@@ -1,0 +1,96 @@
+/* Style général du formulaire */
+.form-title {
+  font-size: 26px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #2c3e50; /* Couleur du texte */
+}
+
+p {
+  text-align: center;
+  color: #7f8c8d; /* Couleur du texte */
+  margin-bottom: 25px;
+}
+
+/* Style des champs de formulaire */
+.p-float-label {
+  display: block;
+  margin: 0 auto 20px auto;
+  max-width: 350px;
+  position: relative;
+}
+
+/* Style des champs de texte */
+.p-float-label input, .p-float-label p-password {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #bdc3c7; /* Bordure des champs */
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 16px;
+  color: #2c3e50;
+  background: #ecf0f1; /* Couleur de fond */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.p-float-label input:focus, .p-float-label p-password:focus {
+  border-color: #3498db; /* Bordure au focus */
+  background: #fff; /* Couleur de fond au focus */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Ombre au focus */
+}
+
+/* Style des labels */
+.p-float-label label {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  font-size: 14px;
+  color: #95a5a6;
+  transition: 0.2s ease all;
+}
+
+.p-float-label input:focus + label,
+.p-float-label p-password:focus + label,
+.p-float-label input:not(:placeholder-shown) + label,
+.p-float-label p-password:not(:placeholder-shown) + label {
+  top: -10px;
+  left: 12px;
+  font-size: 12px;
+  color: #3498db;
+}
+
+/* Style du champ mot de passe */
+p-password {
+  margin: 0 auto 20px auto;
+}
+
+/* Style du bouton */
+.bouton {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.p-button {
+  background-color: #3498db;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 70%;
+}
+
+.p-button:hover {
+  background-color: #2980b9;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  font-size: 1.5px;
+}
+.contenu{
+  display: block;
+  justify-content: center;
+  margin-top: 150px;
+}
