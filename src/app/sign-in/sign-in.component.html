@@ -1,19 +1,22 @@
 <div class="contenu">
-<h2 class="form-title">Sign in</h2>
-<p>Stay Updated on your professional world</p>
+  <h2 class="form-title">Sign in</h2>
+  <p>Stay Updated on your professional world</p>
 
-<span class="p-float-label">
-    <input pInputText id="username" [(ngModel)]="value"  placeholder="Username" />
+  <span class="p-float-label">
+    <input pInputText id="username" [(ngModel)]="email" placeholder="Username" />
     <label htmlFor="username">Username</label>
-</span>
+     <p *ngIf="requiredEmailError" class="p-error">This is a required field.</p>
+  </span>
 
-<span class="p-float-label">
+  <span class="p-float-label">
+    <p-password [(ngModel)]="password" [feedback]="true"></p-password>
+    <p *ngIf="requiredPasswordError" class="p-error">This is a required field.</p>
+  </span>
 
-<p-password [(ngModel)]="passwordvalue" [feedback]="true"></p-password>
+  <div class="bouton">
+    <p-button label="Sign in" class="p-button" (onClick)="submitForm()"></p-button>
+    <span><p-button label="Register" (click)="register()" [size]="'small'"  [link]="true"></p-button></span>
 
-</span>
 
-<div class="bouton">
-  <p-button label="Sign in" class="p-button"></p-button>
-</div>
+  </div>
 </div>

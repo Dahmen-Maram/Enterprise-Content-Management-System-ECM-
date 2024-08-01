@@ -6,24 +6,26 @@
         <label for="firstname2">Firstname</label>
         <input id="firstname2" type="text" [(ngModel)]="person.name" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" name="name">
       </div>
+      <p *ngIf="RequiredfirstnameError" class="p-error">This is a required field.</p>
       <div class="field col">
         <label for="lastname2">Lastname</label>
         <input id="lastname2" type="text" [(ngModel)]="person.lastName" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" name="lastName">
       </div>
+      <p *ngIf="RequiredlastnameError" class="p-error">This is a required field.</p>
     </div>
     <div class="form-row">
       <p>Gender</p>
       <div class="formgroup-inline">
         <div class="field-checkbox">
-          <input type="checkbox" id="Female" [(ngModel)]="person.gender" name="gender">
+          <input type="radio" id="Female" [(ngModel)]="person.gender" name="gender" value="Female">
           <label for="Female">Female</label>
         </div>
         <div class="field-checkbox">
-          <input type="checkbox" id="Male" [(ngModel)]="person.gender" name="gender">
+          <input type="radio" id="Male" [(ngModel)]="person.gender" name="gender" value="Male">
           <label for="Male">Male</label>
         </div>
         <div class="field-checkbox">
-          <input type="checkbox" id="others" [(ngModel)]="person.gender" name="gender">
+          <input type="radio" id="others" [(ngModel)]="person.gender" name="gender" value="Others">
           <label for="others">Others</label>
         </div>
       </div>
@@ -35,6 +37,7 @@
           </span>
         <input type="text" class="p-inputtext" placeholder="Enter your address" [(ngModel)]="person.address" name="address">
       </div>
+        <p *ngIf="RequiredadressError" class="p-error">This is a required field.</p>
     </div>    <div class="form-row">
       <div class="p-inputgroup">
           <span class="p-inputgroup-addon">
@@ -42,14 +45,18 @@
           </span>
         <input type="password" class="p-inputtext" placeholder="Enter your password" [(ngModel)]="person.password" name="password">
       </div>
+    <p *ngIf="RequiredpasswordError" class="p-error">This is a required field.</p>
     </div>
     <div class="form-row">
       <div class="p-inputgroup">
           <span class="p-inputgroup-addon">
             <i class="pi pi-key"></i>
           </span>
-        <input type="password" class="p-inputtext" placeholder="Confirm your password" [(ngModel)]="confirmedpassword" name="confirmpassword">
+        <input type="password" class="p-inputtext" placeholder="Confirm your password" [(ngModel)]="confirmedpassword" name="confirmpassword" (ngModelChange)="validatepass()">
+
       </div>
+      <p *ngIf="RequiredpasswordnameError" class="p-error">This is a required field.</p>
+      <p *ngIf="RequiredSamepasswordError" class="p-error">Password do not match</p>
     </div>
     <div class="formgrid grid">
       <div class="field col">
@@ -59,6 +66,7 @@
             </span>
           <input type="number" class="p-inputtext" placeholder="Enter your phone number" [(ngModel)]="person.phone" name="phone">
         </div>
+        <p *ngIf="RequiredphoneNumberError" class="p-error">This is a required field.</p>
       </div>
       <div class="field col">
         <div class="p-inputgroup">
@@ -67,13 +75,20 @@
             </span>
           <input type="text" class="p-inputtext" placeholder="Enter your email" [(ngModel)]="person.email" name="mail">
         </div>
+        <p *ngIf="RequiredEmailError" class="p-error">This is a required field.</p>
       </div>
     </div>
     <div class="form-row">
-      <p-calendar class="max-w-full p-calendar" [(ngModel)]="person.birthDate" [inline]="true" [showWeek]="true" name="dateofbirth"></p-calendar>
+      <p-calendar class="max-w-full p-calendar" [(ngModel)]="person.birthDate" [inline]="true" [showWeek]="true" name="dateofbirth" (onSelect)="validateAge()"></p-calendar>
+      <p class="p-mt-2">Selected Date: {{ date | date:'fullDate' }}</p>
+      <p *ngIf="RequiredDateOfBirthError" class="p-error">This is a required fieldl.</p>
+      <p *ngIf="ageError" class="p-error">Age must be 18 years or older.</p>
     </div>
     <div class="bouton">
-    <p-button label="Submit" type="submit" class="p-button"></p-button>
+      <p-button label="Submit" type="submit" class="p-button"></p-button>
+      <p-button label="Sign in" class="p-button" (click)="navigateToPage()"></p-button>
+
     </div>
+
   </form>
 </div>

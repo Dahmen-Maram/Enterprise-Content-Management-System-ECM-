@@ -85,15 +85,14 @@
 .p-calendar {
   width: 100%;
 }
-.bouton{
+.bouton {
   display: flex;
   justify-content: center;
-  font-size: 1px;
+  padding: 2px;
   border-radius: 60%;
 }
+
 .p-button {
-  display: block;
-  width:fit-content;
-
-
+  margin: 0 10px; /* Adjust the value to control the spacing between buttons */
 }
+

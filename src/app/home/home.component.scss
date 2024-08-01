@@ -1,0 +1,63 @@
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #ecf0f1; /* Couleur de fond */
+  color: #2c3e50; /* Couleur du texte */
+  font-family: 'Arial', sans-serif;
+}
+
+.welcome-text {
+  font-size: 26px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #2c3e50; /* Couleur du texte */
+}
+
+p {
+  text-align: center;
+  color: #7f8c8d; /* Couleur du texte */
+  margin-bottom: 25px;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px; /* Espacement entre les boutons */
+}
+
+.button {
+  padding: 12px 24px;
+  font-size: 16px;
+  border: 1px solid #bdc3c7; /* Bordure similaire aux champs du formulaire */
+  border-radius: 6px;
+  color: #fff;
+  background-color: #3498db; /* Couleur de fond similaire aux boutons du formulaire */
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+  text-decoration: none;
+}
+
+.button:hover {
+  background-color: #2980b9; /* Couleur au survol similaire au formulaire */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.button-signin {
+  background-color: #3498db;
+}
+
+.button-signup {
+  background-color: #2ecc71; /* Couleur de fond pour le bouton Sign Up */
+}
+
+.button-signin:hover {
+  background-color: #2980b9;
+}
+
+.button-signup:hover {
+  background-color: #27ae60; /* Couleur au survol pour le bouton Sign Up */
+}
