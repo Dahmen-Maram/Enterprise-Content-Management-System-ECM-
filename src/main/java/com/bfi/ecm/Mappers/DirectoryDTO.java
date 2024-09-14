@@ -18,26 +18,30 @@ public class DirectoryDTO {
     private List<File> files = new ArrayList<>();
     private String name;
     private String path;
+    private Directory parent;
 
-    public DirectoryDTO fromEntity(Directory directory) {
-        DirectoryDTO directoryDTO = null;
+    public static DirectoryDTO fromEntity(Directory directory) {
         if (directory == null) {
             return null;
-        } else return directoryDTO.builder()
-                .name(directory.getName())
-                .path(directory.getPath())
-                .files(directory.getFiles())
-                .build();
+        } else {
+            return DirectoryDTO.builder()
+                    .name(directory.getName())
+                    .path(directory.getPath())
+                    .files(directory.getFiles())
+                    .parent(directory.getParent())
+                    .build();
+        }
     }
 
-    public Directory toEntity(DirectoryDTO directoryDTO) {
-        Directory directory = new Directory();
+    public static Directory toEntity(DirectoryDTO directoryDTO) {
         if (directoryDTO == null) {
             return null;
         } else {
+            Directory directory = new Directory();
             directory.setName(directoryDTO.getName());
             directory.setPath(directoryDTO.getPath());
             directory.setFiles(directoryDTO.getFiles());
+            directory.setParent(directoryDTO.getParent());
             return directory;
         }
     }

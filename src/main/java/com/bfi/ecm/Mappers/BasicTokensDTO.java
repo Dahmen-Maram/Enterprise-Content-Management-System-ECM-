@@ -1,7 +1,7 @@
 package com.bfi.ecm.Mappers;
 
-import com.bfi.ecm.Entities.BasicTokens;
 import com.bfi.ecm.Entities.File;
+import com.bfi.ecm.Entities.Tokens;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +21,7 @@ public class BasicTokensDTO {
         this.files = files;
     }
 
-    public BasicTokensDTO fromEntity(BasicTokens basicTokens) {
+    public BasicTokensDTO fromEntity(Tokens basicTokens) {
         if (basicTokens == null) {
             return null;
         }
@@ -30,11 +30,11 @@ public class BasicTokensDTO {
                 .build();
     }
 
-    public BasicTokens toEntity(BasicTokensDTO basicTokensDTO) {
+    public Tokens toEntity(BasicTokensDTO basicTokensDTO) {
         if (basicTokensDTO == null) {
             return null;
         }
-        BasicTokens basicTokens = new BasicTokens();
+        Tokens basicTokens = new Tokens();
         basicTokens.setFiles(basicTokensDTO.getFiles());
         return basicTokens;
     }

@@ -2,7 +2,7 @@ package com.bfi.ecm.Services.ServiceImplementation;
 
 import com.bfi.ecm.Entities.Person;
 import com.bfi.ecm.Repositories.PersonRepository;
-import com.bfi.ecm.Services.Serviceinterfaces.PersonServices;
+import com.bfi.ecm.Services.PersonServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

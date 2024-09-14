@@ -1,4 +1,4 @@
-package com.bfi.ecm.Services.Serviceinterfaces;
+package com.bfi.ecm.Services;
 
 import com.bfi.ecm.Entities.Person;
 

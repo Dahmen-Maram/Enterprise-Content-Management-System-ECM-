@@ -2,7 +2,7 @@ package com.bfi.ecm.Controllers;
 
 import com.bfi.ecm.Entities.Person;
 import com.bfi.ecm.Mappers.PersonDTO;
-import com.bfi.ecm.Services.Serviceinterfaces.PersonServices;
+import com.bfi.ecm.Services.PersonServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -12,7 +12,7 @@ public class Person extends BaseEntity {
     private String lastName;
     private String gender;
     private String address;
-    private int phone;
+    private String phone;
     private String email;
     private LocalDate birthDate;
     private String password;
