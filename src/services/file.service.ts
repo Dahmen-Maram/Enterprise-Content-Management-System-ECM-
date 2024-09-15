@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {catchError, Observable, throwError} from 'rxjs';
 import {FilesAndDirectoriesResponse} from "src/app/Models/directory.model";
 
 @Injectable({
@@ -18,11 +18,37 @@ export class FileUploadService {
 
     return this.http.post(`${this.apiUrl}/files/upload`, formData);
   }
+  searchFiles(keyword: string): Observable<Map<number, string>> {
+    return this.http.get<Map<number, string>>(`${this.apiUrl}/search/${keyword}`);
+  }
 
   getAllFilesAndDirectories(): Observable<FilesAndDirectoriesResponse> {
     return this.http.get<FilesAndDirectoriesResponse>(`${this.apiUrl}/files/all`);
   }
-  deleteFile(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/files/${id}`);
+  updateFile(id: number, file?: File, name?: string, parentId?: number): Observable<any> {
+    const formData: FormData = new FormData();
+    if (file) {
+      formData.append('file', file, file.name);
+    }
+    if (name) {
+      formData.append('newName', name);
+    }
+    if (parentId !== undefined && parentId !== null) {
+      formData.append('newParentFileId', parentId.toString());
+    }
+
+    return this.http.put(`${this.apiUrl}/files/update/${id}`, formData, { responseType: 'text' });
   }
-}
+
+  createDirectory(directoryData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/directories/create`, directoryData, { responseType: 'text' })
+  .pipe(
+      catchError(error => {
+        // Handle error response
+        return throwError(error);
+      })
+    );
+
+
+
+  }}

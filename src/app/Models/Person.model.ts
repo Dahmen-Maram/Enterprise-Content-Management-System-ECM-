@@ -3,7 +3,7 @@ export class Person {
   lastName: string;
   gender: string;
   address: string;
-  phone: number;
+  phone: string;
   email: string;
   birthDate: Date;
   password: string;
@@ -13,7 +13,7 @@ export class Person {
     this.lastName = '';
     this.gender = '';
     this.address = '';
-    this.phone =0;
+    this.phone ='';
     this.email = '';
     this.password='';
     this.birthDate = new Date();

@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import {MenubarModule} from "primeng/menubar";
-import {InputTextModule} from "primeng/inputtext";
+
 import { SignInComponent } from './sign-in/sign-in.component';
 import { SignOutComponent } from './sign-out/sign-out.component';
 import { HomeComponent } from './home/home.component';
@@ -31,6 +31,13 @@ import {AutoCompleteModule} from "primeng/autocomplete";
 import {ToolbarModule} from "primeng/toolbar";
 import {SplitButtonModule} from "primeng/splitbutton";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
+
+import { InputTextModule } from 'primeng/inputtext';
+import {DialogModule} from "primeng/dialog";
+import {ButtonModule} from "primeng/button";
+import {OverlayPanelModule} from "primeng/overlaypanel";
+
+
 
 
 
@@ -66,8 +73,12 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
     TreeTableModule,
     AutoCompleteModule,
     ToolbarModule,
+    DialogModule,
+    ButtonModule,
     SplitButtonModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    InputTextModule,
+    OverlayPanelModule
   ],
   providers: [PersonService,MessageService],
   bootstrap: [AppComponent]

@@ -1,29 +1,39 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import { MenuItem, TreeNode, TreeTableNode } from 'primeng/api';
 import { FileUploadService } from 'src/services/file.service';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef } from '@angular/core';
 import { MessageService } from 'primeng/api';
+import {OverlayPanel} from "primeng/overlaypanel";
 
 @Component({
   selector: 'file-archive',
   templateUrl: './filearchive.component.html',
+  styleUrls: ['./filearchive.component.scss'],
   providers: [MessageService]
 })
 export class FileArchiveComponent implements OnInit {
   cols!: any[];
   selectedFiles: File[] = [];
+  selectedFileName: string = 'No file selected'; // Default label
   message: string = '';
   selectedNode?: TreeNode;
   selectedNode2?: TreeTableNode<any> | TreeTableNode<any>[] | null;
   files: TreeNode[] = [];
   newDirectoryName: string = '';
   tree: TreeNode[] = [];
-  parentPath: string | null = null;
   id: number = 1;
   items: MenuItem[] | undefined;
-  private apiUrl = 'http://localhost:8090/bfi/v1';
-  selectionKeys: any;
+  fileopp: MenuItem[] | undefined;
+  private apiUrl = 'http://localhost:8080/bfi/v1';
+  updatedFile?: File;
+  updatedName: string = '';
+  updatedParentId?: number;
+  displayUpdateDialog: boolean = false;
+  isDirectoryUpdate: boolean = false;
+  @ViewChild('searchPanel') searchPanel!: OverlayPanel;
+  searchTerm: string = '';
+  filteredFiles: { id: number, name: string }[] = [];// Track if it's a directory update
 
   constructor(
     private fileUploadService: FileUploadService,
@@ -60,32 +70,98 @@ export class FileArchiveComponent implements OnInit {
       }
     ];
 
+    this.fileopp = [
+      {
+        label: 'Choose',
+        icon: 'pi pi-file',
+        command: () => this.chooseFile()
+      },
+      {
+        label: 'Upload',
+        icon: 'pi pi-upload',
+        command: () => this.onUpload()
+      }
+    ];
+
     this.fetchFilesAndDirectories();
   }
 
-  onFileSelected(event: any) {
-    this.selectedFiles = Array.from(event.files);
+  chooseFile() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = true; // Allow multiple file selection
+    input.style.display = 'none';
+    input.addEventListener('change', (event: any) => {
+      this.onFileSelected(event);
+    });
+    document.body.appendChild(input);
+    input.click();
+    document.body.removeChild(input);
   }
+
+  onFileSelected(event: any) {
+    this.selectedFiles = Array.from(event.target.files);
+    if (this.selectedFiles.length > 0) {
+      this.selectedFileName = this.selectedFiles[0].name; // Update label to selected file name
+    } else {
+      this.selectedFileName = 'No file selected'; // Reset label if no file selected
+    }
+  }
+  onSearchClick(event: Event) {
+    this.searchPanel.toggle(event);
+  }
+
+  searchFiles(event: any) {
+    this.http.get<{ [key: string]: string }>(`${this.apiUrl}/search`, {
+      params: { mot: event.query }
+    }).subscribe({
+      next: (response) => {
+        this.filteredFiles = Object.entries(response).map(([id, name]) => ({
+          id: Number(id),
+          name
+        }));
+      },
+      error: (error) => {
+        console.error('Error searching files:', error);
+      }
+    });
+  }
+
 
   onUpload() {
     if (this.selectedFiles.length > 0) {
       this.selectedFiles.forEach(file => {
+        const fileName = file.name;
+        const parentDirectoryId = this.selectedNode && this.selectedNode.data.name !== 'Root' ? this.selectedNode.data.id : 1;
+
+        // Check for name conflicts
+        if (this.files.some(node => node.data.name === fileName && node.data.filetype !== 'directory' && node.parent && node.parent.data.id === parentDirectoryId)) {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'A file with the same name already exists' });
+          return;
+        }
+
+        if (this.files.some(node => node.data.name === fileName && node.data.filetype === 'directory' && node.parent && node.parent.data.id === parentDirectoryId)) {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'A directory with the same name already exists' });
+          return;
+        }
+
         const uploadId = this.id;
         this.fileUploadService.upload(file, uploadId).subscribe({
           next: (response: any) => {
             console.log('Upload response:', response);
-            this.message = 'File uploaded successfully';
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'File uploaded successfully' });
             this.fetchFilesAndDirectories();
           },
           error: (err: any) => {
             console.error('Upload error:', err);
-            this.message = 'Failed to upload file';
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to upload file' });
           }
         });
       });
       this.selectedFiles = [];
+      this.selectedFileName = 'No file selected'; // Reset file name after upload
     } else {
-      this.message = 'No files selected for upload';
+      this.messageService.add({ severity: 'warn', summary: 'Warning', detail: 'No files selected for upload' });
     }
   }
 
@@ -101,6 +177,7 @@ export class FileArchiveComponent implements OnInit {
       },
       error: error => {
         console.error("Error fetching files and directories:", error);
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to fetch files and directories' });
       }
     });
   }
@@ -116,7 +193,7 @@ export class FileArchiveComponent implements OnInit {
         filetype: item.filetype || 'directory'
       },
       children: [],
-      expanded: true,
+      expanded: false,
       selectable: true
     });
 
@@ -193,18 +270,30 @@ export class FileArchiveComponent implements OnInit {
   onNodeSelect(event: any) {
     this.selectedNode = event.node;
     this.id = event.node.data.id;
+    this.isDirectoryUpdate = this.selectedNode!.data.filetype === 'directory';
     console.log(this.id);
     console.log(event.node.data.name);
   }
 
   createDirectory() {
     if (!this.newDirectoryName.trim()) {
-      this.message = 'Directory name cannot be empty';
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Directory name cannot be empty' });
       return;
     }
 
     const directoryName = this.newDirectoryName.trim();
     const parentDirectoryId = this.selectedNode && this.selectedNode.data.name !== 'Root' ? this.selectedNode.data.id : 1;
+
+    // Check for name conflicts locally
+    if (this.files.some(node => node.data.name === directoryName && node.data.filetype === 'directory' && node.parent && node.parent.data.id === parentDirectoryId)) {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'A directory with the same name already exists' });
+      return;
+    }
+
+    if (this.files.some(node => node.data.name === directoryName && node.data.filetype !== 'directory' && node.parent && node.parent.data.id === parentDirectoryId)) {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'A file with the same name already exists' });
+      return;
+    }
 
     const requestPayload = {
       name: directoryName,
@@ -213,16 +302,19 @@ export class FileArchiveComponent implements OnInit {
       }
     };
 
-    this.http.post(`${this.apiUrl}/directories/create`, requestPayload, { responseType: 'text'} )
-  .subscribe({
+    this.fileUploadService.createDirectory(requestPayload).subscribe({
       next: () => {
-        this.message = 'Directory created successfully';
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Directory created successfully' });
         this.newDirectoryName = '';
         this.fetchFilesAndDirectories();
       },
       error: (err: any) => {
-        console.error('Error creating directory:', err);
-        this.message = 'Failed to create directory';
+        if (err.status === 409) {
+          this.messageService.add({ severity: 'error', summary: 'Conflict', detail: err.error });
+        } else {
+          console.error('Error creating directory:', err);
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to create directory' });
+        }
       }
     });
   }
@@ -237,24 +329,72 @@ export class FileArchiveComponent implements OnInit {
   }
 
   onDeleteFile(id: number) {
-    this.fileUploadService.deleteFile(id).subscribe({
-      next: () => {
-        this.message = 'File deleted successfully';
-        this.fetchFilesAndDirectories();
-      },
-      error: (err: any) => {
-        console.error('Error deleting file:', err);
-        this.message = 'Failed to delete file';
-      }
-    });
+    this.http.delete(`${this.apiUrl}/files/${id}`, { responseType: 'text' })
+      .subscribe({
+        next: () => {
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'File deleted successfully' });
+          this.fetchFilesAndDirectories();
+          this.displayUpdateDialog = false;
+        },
+        error: (err: any) => {
+          console.error('Error deleting file:', err);
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete file' });
+        }
+      });
   }
 
   deleteSelectedFile() {
     if (this.selectedNode && this.selectedNode.data.filetype !== 'directory') {
       this.onDeleteFile(this.selectedNode!.data.id);
-      this.fetchFilesAndDirectories();
     } else {
-      this.message = 'Please select a file to delete';
+      this.messageService.add({ severity: 'warn', summary: 'Warning', detail: 'Please select a file to delete' });
     }
+  }
+
+  updateSelectedItem() {
+    if (!this.selectedNode || !this.selectedNode.data.id) {
+      this.messageService.add({ severity: 'warn', summary: 'Warning', detail: 'Please select a file or directory to update' });
+      return;
+    }
+
+    const id = this.selectedNode.data.id;
+    const isDirectory = this.selectedNode.data.filetype === 'directory';
+    const name = this.updatedName;
+
+    if (isDirectory) {
+      // Update directory name
+      this.http.put(`${this.apiUrl}/directories/update/${id}?name=${encodeURIComponent(name)}`, null, { responseType: 'text' })
+        .subscribe({
+          next: response => {
+            console.log('Directory update response:', response); // Log the response
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Directory updated successfully' });
+            this.fetchFilesAndDirectories();
+          },
+          error: (err: any) => {
+            console.error('Error updating directory:', err);
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update directory' });
+          }
+        });
+    } else {
+      // Update file
+      this.fileUploadService.updateFile(id, this.updatedFile, this.updatedName, this.updatedParentId)
+        .subscribe({
+          next: response => {
+            console.log('File update response:', response); // Log the response
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'File updated successfully' });
+            this.fetchFilesAndDirectories();
+          },
+          error: (err: any) => {
+            console.error('Error updating file:', err);
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update file' });
+          }
+        });
+    }
+
+    this.displayUpdateDialog = false; // Close dialog after update
+  }
+
+  onFileChange(event: any) {
+    this.updatedFile = event.target.files[0];
   }
 }
